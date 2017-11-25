@@ -1,5 +1,7 @@
 import scrapy
 import json
+import os
+import urllib
 
 class Spidergram(scrapy.Spider):
     name = "Insta"
@@ -7,6 +9,13 @@ class Spidergram(scrapy.Spider):
     def __init__(self):
         self.account = input("Name of the account? ")
         self.start_urls = ["https://www.instagram.com/" + self.account]
+        self._setup_folder()
+
+    def _setup_folder(self):
+        self.save_dir = '@' + self.account
+
+        if not os.path.exists(self.save_dir):
+            os.makedirs(self.save_dir)
 
     def parse(self, response):
         request = scrapy.Request(response.url, callback=self.parse_page)
@@ -37,3 +46,9 @@ class Spidergram(scrapy.Spider):
         if has_next:
             url="https://www.instagram.com/" + self.account + "/?max_id=" + media[-1]['id']
             yield scrapy.Request(url, callback=self.parse_page)
+
+    def save_media(self, response):
+        response_id = response.meta['id']
+        extension = response.meta['extension']
+        fullfilename = os.path.join(self.save_dir, response_id + extension)
+        urllib.request.urlretrieve(response.url, fullfilename)
