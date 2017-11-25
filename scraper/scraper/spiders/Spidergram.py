@@ -12,7 +12,7 @@ class Spidergram(scrapy.Spider):
         self._setup_folder()
 
     def _setup_folder(self):
-        self.save_dir = '@' + self.account
+        self.save_dir = 'users/@' + self.account
 
         if not os.path.exists(self.save_dir):
             os.makedirs(self.save_dir)
