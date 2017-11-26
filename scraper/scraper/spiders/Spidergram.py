@@ -4,15 +4,16 @@ import os
 import urllib
 
 class Spidergram(scrapy.Spider):
-    name = "Insta"
+    name = "Spidergram"
 
-    def __init__(self):
-        self.account = input("Name of the account? ")
+    def __init__(self, account='', *args, **kwargs):
+        super(Spidergram, self).__init__(*args, **kwargs)
+        self.account = account
         self.start_urls = ["https://www.instagram.com/" + self.account]
         self._setup_folder()
 
     def _setup_folder(self):
-        self.save_dir = 'users/@' + self.account
+        self.save_dir = 'users/' + self.account
 
         if not os.path.exists(self.save_dir):
             os.makedirs(self.save_dir)
